@@ -1,5 +1,7 @@
 package com.zj.serialize;
 
+import java.io.FileNotFoundException;
+
 public interface Serializer {
 
     /**
@@ -7,7 +9,7 @@ public interface Serializer {
      * @param obj
      * @return
      */
-    byte[] serialize(Object obj);
+    byte[] serialize(Object obj) throws FileNotFoundException;
 
     /**
      * 反序列化
