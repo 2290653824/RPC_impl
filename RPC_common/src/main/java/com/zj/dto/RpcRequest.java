@@ -10,7 +10,12 @@ import javax.annotation.security.DenyAll;
 @Data
 @ToString
 public class RpcRequest {
-
+    String requestId;
     String interfaceName;
     String methodName;
+    private Object[] parameters;
+    private Class<?> parameterType;
+    private RpcMessageType rpcMEssageType;
+    private String version;
+    private String group;  //解决一个实现类有多个接口
 }

@@ -56,8 +56,12 @@ public class NettyClient {
     public static void main(String[] args) throws InterruptedException {
         NettyClient client = new NettyClient("localhost", 8089);
         RpcRequest request = RpcRequest.builder().interfaceName("UserService").methodName("getUserById").build();
-        RpcResponse sent = client.sent(request);
-        System.out.println(sent);
+        for(int i=3;i>0;i--){
+            RpcResponse sent = client.sent(request);
+            System.out.println(sent);
+        }
+
+
     }
 
 

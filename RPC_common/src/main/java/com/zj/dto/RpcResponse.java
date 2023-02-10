@@ -8,6 +8,9 @@ import lombok.*;
 @Builder
 @Data
 @ToString
-public class RpcResponse {
+public class RpcResponse<T> {
+    private String requestId;
+    private int code;
     String message;
+    private T data;
 }
