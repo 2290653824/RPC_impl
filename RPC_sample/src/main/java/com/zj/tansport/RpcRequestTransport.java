@@ -5,5 +5,5 @@ import com.zj.dto.RpcResponse;
 
 public interface RpcRequestTransport {
 
-     RpcResponse sendRpcRequest(RpcRequest rpcRequest);
+     Object sendRpcRequest(RpcRequest rpcRequest);
 }
