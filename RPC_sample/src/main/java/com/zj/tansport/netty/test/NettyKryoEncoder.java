@@ -1,4 +1,4 @@
-package com.zj.tansport.netty;
+package com.zj.tansport.netty.test;
 
 import com.zj.serialize.Serializer;
 import io.netty.buffer.ByteBuf;

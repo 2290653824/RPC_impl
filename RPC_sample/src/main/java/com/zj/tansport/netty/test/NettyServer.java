@@ -1,4 +1,4 @@
-package com.zj.tansport.netty;
+package com.zj.tansport.netty.test;
 
 import com.zj.dto.RpcRequest;
 import com.zj.dto.RpcResponse;
@@ -8,7 +8,6 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import jdk.nashorn.internal.runtime.linker.Bootstrap;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
