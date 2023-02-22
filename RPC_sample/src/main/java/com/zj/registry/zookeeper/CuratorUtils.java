@@ -10,6 +10,8 @@ import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,6 +32,8 @@ public class CuratorUtils {
     private static CuratorFramework zkClient;
 
     private final static Set<String> REGISTRYED_PATH_SET= ConcurrentHashMap.newKeySet();
+
+    private final static Map<String,List<String>> SERVICE_ADDRESS_MAP=new ConcurrentHashMap<>();
 
     public static CuratorFramework getZkClient(){
         Properties properties = PropertiesFileUtil.readPropertiesFile(RpcConfigEnum.RPC_CONFIG_PATH.getPropertyValue());
@@ -71,5 +75,22 @@ public class CuratorUtils {
         }catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static List<String> getChildrenNodes(CuratorFramework zkClient,String serviceName){
+        if(SERVICE_ADDRESS_MAP.containsKey(serviceName)){
+            return SERVICE_ADDRESS_MAP.get(serviceName);
+        }
+
+        List<String> result=null;
+        String servicePath=ZK_REGISTRY_ROOT_PATH +"/"+ serviceName;
+        try{
+             result = zkClient.getChildren().forPath(servicePath);
+            SERVICE_ADDRESS_MAP.put(serviceName,result);
+            registerWatcher(serviceName, zkClient);
+        } catch (Exception e) {
+           log.error("get children nodes for path [{}] fail",servicePath);
+        }
+        return result;
     }
 }
