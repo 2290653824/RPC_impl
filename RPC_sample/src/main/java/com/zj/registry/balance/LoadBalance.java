@@ -1,4 +1,4 @@
-package com.zj.registry;
+package com.zj.registry.balance;
 
 import com.zj.dto.RpcRequest;
 
