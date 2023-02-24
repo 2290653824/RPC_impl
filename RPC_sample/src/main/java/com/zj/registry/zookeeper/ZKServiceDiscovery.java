@@ -28,7 +28,5 @@ public class ZKServiceDiscovery implements ServiceDiscovery {
         log.info("this balance has successfully get the target address");
         String[] hostAndPort=serviceAddress.split(":");
         return new InetSocketAddress(hostAndPort[0],Integer.valueOf(hostAndPort[1]));
-
-
     }
 }

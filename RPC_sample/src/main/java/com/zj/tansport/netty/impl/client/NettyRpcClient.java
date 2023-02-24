@@ -5,18 +5,27 @@ import com.zj.constant.RpcConstants;
 import com.zj.dto.RpcMessage;
 import com.zj.dto.RpcRequest;
 import com.zj.dto.RpcResponse;
+import com.zj.registry.ServiceDiscovery;
+import com.zj.registry.zookeeper.ZKServiceDiscovery;
 import com.zj.tansport.RpcRequestTransport;
 import com.zj.tansport.netty.impl.ChannelProvider;
 import com.zj.tansport.netty.impl.UnprocessedRequests;
+import com.zj.tansport.netty.impl.server.NettyRpcServerHandler;
+import com.zj.tansport.netty.impl.server.RpcMessageDecoder;
+import com.zj.tansport.netty.impl.server.RpcMessageEncoder;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 
@@ -31,6 +40,31 @@ public final class NettyRpcClient implements RpcRequestTransport {
     private final Bootstrap bootstrap;
 
     private final EventLoopGroup eventLoopGroup;
+
+    public NettyRpcClient(){
+        this.eventLoopGroup = new NioEventLoopGroup();
+        this.bootstrap=new Bootstrap().group(eventLoopGroup)
+                .channel(NioSocketChannel.class)
+                .handler(new LoggingHandler(LogLevel.INFO))
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS,3000)
+                .handler(new ChannelInitializer<NioSocketChannel>() {
+                    @Override
+                    protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
+                        ChannelPipeline pipeline = nioSocketChannel.pipeline();
+                        pipeline.addLast(new IdleStateHandler(0,5,0, TimeUnit.SECONDS));
+                        pipeline.addLast(new RpcMessageDecoder());
+                        pipeline.addLast(new RpcMessageEncoder());
+                        pipeline.addLast(new NettyRpcServerHandler());
+                    }
+                });
+
+        this.serviceDiscovery = new ZKServiceDiscovery();
+        this.unprocessedRequests = new UnprocessedRequests();
+        this.channelProvider = new ChannelProvider();
+
+
+
+    }
 
     /**
      * 知识点：
@@ -65,8 +99,8 @@ public final class NettyRpcClient implements RpcRequestTransport {
     @Override
     public Object sendRpcRequest(RpcRequest rpcRequest) {
         CompletableFuture<RpcResponse<Object>> completableFuture = new CompletableFuture<>();
-        String rpcServiceName=rpcRequest.toRpcProperties().toRpcServiceName(); //根据请求查看服务名称
-        InetSocketAddress inetSocketAddress=serviceDiscovery.lookupService(rpcServiceName);//根据名称通过 负载均衡找到对应的地址端口
+//        String rpcServiceName=rpcRequest.toRpcProperties().toRpcServiceName(); //根据请求查看服务名称
+        InetSocketAddress inetSocketAddress=serviceDiscovery.discovery(rpcRequest);//根据名称通过 负载均衡找到对应的地址端口
         Channel channel = doConnection(inetSocketAddress);
         if(channel.isActive()){
             //将每个对应的requestId存到一个容器中

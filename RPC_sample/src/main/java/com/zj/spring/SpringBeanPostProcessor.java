@@ -3,6 +3,8 @@ package com.zj.spring;
 import com.zj.dto.RpcServiceConfig;
 import com.zj.provider.ServiceProvider;
 import com.zj.provider.ServiceProviderImpl;
+import com.zj.proxy.RpcClientProxy;
+import com.zj.tansport.netty.impl.client.NettyRpcClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -39,7 +41,20 @@ public class SpringBeanPostProcessor implements BeanPostProcessor {
         for(Field field : fields){
             if(field.isAnnotationPresent(RpcReference.class)){
                 RpcReference rpcReference = field.getAnnotation(RpcReference.class);
+                if(rpcReference!=null){
+                    RpcServiceConfig rpcServiceConfig = RpcServiceConfig.builder().version(rpcReference.version())
+                            .group(rpcReference.group()).build();
+                    RpcClientProxy rpcClientProxy = new RpcClientProxy(new NettyRpcClient(),rpcServiceConfig);
+                    Object proxy = rpcClientProxy.getProxy(field.getType());
+                    field.setAccessible(true);
+                    try {
+                        field.set(bean,proxy);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
         }
+        return bean;
     }
 }
