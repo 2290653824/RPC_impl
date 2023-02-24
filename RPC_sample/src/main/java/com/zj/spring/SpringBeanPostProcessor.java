@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
+import java.lang.reflect.Field;
+
 @Slf4j
 public class SpringBeanPostProcessor implements BeanPostProcessor {
 
@@ -28,11 +30,16 @@ public class SpringBeanPostProcessor implements BeanPostProcessor {
             serviceProvider.publishService(rpcServiceConfig);
 
         }
-        return BeanPostProcessor.super.postProcessBeforeInitialization(bean, beanName);
+        return bean;
     }
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
+        Field[] fields = bean.getClass().getDeclaredFields();
+        for(Field field : fields){
+            if(field.isAnnotationPresent(RpcReference.class)){
+                RpcReference rpcReference = field.getAnnotation(RpcReference.class);
+            }
+        }
     }
 }
