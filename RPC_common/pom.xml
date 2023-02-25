@@ -17,6 +17,11 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>RPC_service</artifactId>
+            <version></version>
+        </dependency>
     </dependencies>
 
     <properties>
