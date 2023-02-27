@@ -8,10 +8,12 @@ import com.zj.tansport.netty.impl.client.NettyRpcClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 
 @Slf4j
+@Component
 public class SpringBeanPostProcessor implements BeanPostProcessor {
 
     ServiceProvider serviceProvider;

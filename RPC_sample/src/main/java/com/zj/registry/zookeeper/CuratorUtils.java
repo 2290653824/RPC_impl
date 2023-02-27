@@ -25,7 +25,7 @@ public class CuratorUtils {
 
     public final static String ZK_REGISTRY_ROOT_PATH="/my_rpc";
 
-    private final static String DEFAULT_ZOOKEEPER_ADDRESS="localhost:8080";
+    private final static String DEFAULT_ZOOKEEPER_ADDRESS="localhost:2181";
 
     private final static int BASE_SLEEP_TIME=1000; // 重试等待时间
 
