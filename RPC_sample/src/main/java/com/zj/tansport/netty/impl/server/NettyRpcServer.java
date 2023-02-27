@@ -1,6 +1,7 @@
 package com.zj.tansport.netty.impl.server;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+import com.zj.utils.RuntimeUtil;
+import com.zj.utils.ThreadPoolFactoryUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -12,10 +13,8 @@ import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import sun.rmi.runtime.RuntimeUtil;
 
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -29,7 +28,10 @@ public class NettyRpcServer {
         String host= InetAddress.getLocalHost().getHostAddress();
         NioEventLoopGroup bossGroup = new NioEventLoopGroup(1); //处理连接请求
         NioEventLoopGroup workGroup = new NioEventLoopGroup(); //处理对话请求
-        DefaultEventExecutorGroup serviceHandlerGroup = new DefaultEventExecutorGroup();
+        //这里的线程是如何决定的
+        //从这里可以知道这个项目是IO密集的项目，所以这里的cpu数量设置为了2倍
+        DefaultEventExecutorGroup serviceHandlerGroup = new DefaultEventExecutorGroup(RuntimeUtil.cpus()*2
+        , ThreadPoolFactoryUtil.createThreadFactory("service-handler-group", false));
 
         try{
             ServerBootstrap b=new ServerBootstrap();

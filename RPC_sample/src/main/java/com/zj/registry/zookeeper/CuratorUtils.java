@@ -7,6 +7,8 @@ import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.imps.CuratorFrameworkState;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
@@ -92,5 +94,27 @@ public class CuratorUtils {
            log.error("get children nodes for path [{}] fail",servicePath);
         }
         return result;
+    }
+
+
+    private static void registerWatcher(String rpcServiceName, CuratorFramework zkClient) throws Exception {
+        // 构建服务节点的路径
+        String servicePath = ZK_REGISTRY_ROOT_PATH + "/" + rpcServiceName;
+
+        // 创建一个 PathChildrenCache 对象，用于监听服务节点下的子节点变化
+        PathChildrenCache pathChildrenCache = new PathChildrenCache(zkClient, servicePath, true);
+
+        // 创建一个 PathChildrenCache 监听器，用于处理节点变化事件
+        PathChildrenCacheListener pathChildrenCacheListener = (curatorFramework, pathChildrenCacheEvent) -> {
+            // 获取服务节点下的所有子节点，并将它们的地址保存到 SERVICE_ADDRESS_MAP 中
+            List<String> serviceAddresses = curatorFramework.getChildren().forPath(servicePath);
+            SERVICE_ADDRESS_MAP.put(rpcServiceName, serviceAddresses);
+        };
+
+        // 将 PathChildrenCache 监听器添加到 PathChildrenCache 中
+        pathChildrenCache.getListenable().addListener(pathChildrenCacheListener);
+
+        // 启动 PathChildrenCache，开始监听服务节点下的子节点变化
+        pathChildrenCache.start();
     }
 }

@@ -2,8 +2,6 @@ package com.zj.dto;
 
 import lombok.*;
 
-import javax.annotation.security.DenyAll;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

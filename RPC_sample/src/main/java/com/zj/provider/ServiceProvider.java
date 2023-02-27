@@ -2,9 +2,6 @@ package com.zj.provider;
 
 
 import com.zj.dto.RpcServiceConfig;
-import com.zj.spring.RpcService;
-
-import java.net.UnknownHostException;
 
 public interface ServiceProvider {
 
