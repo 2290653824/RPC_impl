@@ -12,6 +12,7 @@
         <module>RPC_sample</module>
         <module>RPC_common</module>
         <module>RPC_example_client</module>
+        <module>RPC_server</module>
     </modules>
 
     <properties>

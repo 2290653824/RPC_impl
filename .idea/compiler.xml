@@ -6,9 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="RPC_example_client" />
         <module name="RPC_sample" />
         <module name="RPC_common" />
+        <module name="RPC_example_client" />
+        <module name="RPC_server" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="8" />
