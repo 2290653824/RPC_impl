@@ -40,6 +40,9 @@ public class CustomScannerRegister implements ImportBeanDefinitionRegistrar {
             rpcScanBasePackages=new String[]{((StandardAnnotationMetadata)annotationMetadata).getIntrospectedClass().getPackage().getName()};
         }
 
+        /**
+         * 扫描时遇到RpcService和Component注解时，将其写入到spring中
+         */
         CustomScanner rpcServiceCustomScanner = new CustomScanner(registry, RpcService.class);
         CustomScanner componentCustomScanner = new CustomScanner(registry, Component.class);
         if(resourceLoader!=null){

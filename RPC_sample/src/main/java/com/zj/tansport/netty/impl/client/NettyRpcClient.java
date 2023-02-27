@@ -6,6 +6,7 @@ import com.zj.dto.RpcMessage;
 import com.zj.dto.RpcRequest;
 import com.zj.dto.RpcResponse;
 import com.zj.registry.ServiceDiscovery;
+import com.zj.registry.balance.impl.RandomBalance;
 import com.zj.registry.zookeeper.ZKServiceDiscovery;
 import com.zj.tansport.RpcRequestTransport;
 import com.zj.tansport.netty.impl.ChannelProvider;
@@ -58,7 +59,7 @@ public final class NettyRpcClient implements RpcRequestTransport {
                     }
                 });
 
-        this.serviceDiscovery = new ZKServiceDiscovery();
+        this.serviceDiscovery = new ZKServiceDiscovery(new RandomBalance());
         this.unprocessedRequests = new UnprocessedRequests();
         this.channelProvider = new ChannelProvider();
 

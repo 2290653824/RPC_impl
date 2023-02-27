@@ -15,6 +15,10 @@ public class ZKServiceDiscovery implements ServiceDiscovery {
 
     private  LoadBalance loadBalance;
 
+    public ZKServiceDiscovery(LoadBalance loadBalance) {
+        this.loadBalance = loadBalance;
+    }
+
     @Override
     public InetSocketAddress discovery(RpcRequest rpcRequest) {
         String serviceName = rpcRequest.getRpcServiceName();

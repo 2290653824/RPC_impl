@@ -9,6 +9,7 @@ public class NettyClientMain {
         AnnotationConfigApplicationContext applicationContext
                 = new AnnotationConfigApplicationContext(NettyClientMain.class);
         HelloController helloController = (HelloController)applicationContext.getBean("helloController");
-        helloController.test();
+        String hello = helloController.hello();
+        System.out.println(hello);
     }
 }
