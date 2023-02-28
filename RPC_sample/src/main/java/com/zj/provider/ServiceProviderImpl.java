@@ -57,6 +57,6 @@ public class ServiceProviderImpl implements ServiceProvider{
             log.error("publicService has failed ,error:[{}]",e.getMessage());
         }
         this.addService(rpcServiceConfig);
-        zkServiceRegistry.registry(rpcServiceConfig.getServiceName(),new InetSocketAddress(host, NettyRpcServer.PORT));
+        zkServiceRegistry.registry(rpcServiceConfig.getRpcServiceName(),new InetSocketAddress(host, NettyRpcServer.PORT));
     }
 }

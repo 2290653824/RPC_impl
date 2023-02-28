@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class HelloController {
 
-    @RpcReference(version = "version1",group = "test")
+    @RpcReference(version = "version1",group = "test1")
     private HelloService helloService;
 
 

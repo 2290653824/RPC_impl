@@ -1,5 +1,8 @@
 package com.zj.tansport.netty.impl.server;
 
+import com.zj.dto.RpcServiceConfig;
+import com.zj.provider.ServiceProvider;
+import com.zj.provider.ServiceProviderImpl;
 import com.zj.utils.RuntimeUtil;
 import com.zj.utils.ThreadPoolFactoryUtil;
 import io.netty.bootstrap.ServerBootstrap;
@@ -23,6 +26,12 @@ import java.util.concurrent.TimeUnit;
 public class NettyRpcServer {
 
     public static final int PORT=9998;
+
+    private ServiceProvider serviceProvider;
+
+    public NettyRpcServer(){
+        serviceProvider=new ServiceProviderImpl();
+    }
 
     @SneakyThrows
     public void start(){
@@ -64,4 +73,7 @@ public class NettyRpcServer {
         }
     }
 
+    public void register(RpcServiceConfig config) {
+        serviceProvider.publishService(config);
+    }
 }

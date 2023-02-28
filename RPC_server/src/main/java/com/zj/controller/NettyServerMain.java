@@ -16,5 +16,8 @@ public class NettyServerMain {
         RpcServiceConfig config = RpcServiceConfig.builder().service(new HelloServiceImpl())
                 .version("version1").group("test1").build();
 
+        rpcServer.register(config);
+        rpcServer.start();
+
     }
 }
